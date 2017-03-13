@@ -1,0 +1,10 @@
+name: presidentielles2017
+channels:
+  - nodefaults
+  - conda-forge
+dependencies:
+  - ipywidgets
+  - numpy
+  - pandas
+  - jupyter
+  - notebook
