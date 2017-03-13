@@ -7,18 +7,18 @@ from IPython.display import display
 
 def load_data():
     "Loads presidential candidates data."
-    mlp = pd.read_csv('projets/marine_le_pen.csv')['texte de la proposition'].str.replace('^.\s', '')
+    mlp = pd.read_csv('projets/marine_le_pen.csv')['proposition'].str.replace('^.\s', '')
     mlp.name = 'proposition'
     yj = pd.read_csv('projets/yannick_jadot.csv')['proposition'].str.replace(' →', '')
-    bh = pd.read_csv('projets/benoit_hamon.csv')['contenu']
+    bh = pd.read_csv('projets/benoit_hamon.csv')['proposition']
     bh.name = 'proposition'
-    jlm = pd.read_csv('projets/jean_luc_melenchon.csv')['mesures'].dropna().str.replace("Nous proposons de réaliser les mesures suivantes\xa0:", '').replace('\xa0', '  ')
+    jlm = pd.read_csv('projets/jean_luc_melenchon.csv')['proposition'].dropna().str.replace("Nous proposons de réaliser les mesures suivantes\xa0:", '').replace('\xa0', '  ')
     jlm.name = 'proposition'
     em = pd.read_csv('projets/emmanuel_macron.csv')['proposition']
-    candidates = [jlm, yj, bh, em, mlp]
-    candidate_labels = ['JLM', 'YJ', 'BH', 'EM', 'MLP']
+    ff = pd.read_csv('projets/francois_fillon.csv')['proposition']
+    candidates = [jlm, yj, bh, em, ff, mlp]
+    candidate_labels = ['JLM', 'YJ', 'BH', 'EM', 'FF', 'MLP']
     return candidates, candidate_labels
-
 
 class GUI:
     def __init__(self, candidate_labels, propositions):
