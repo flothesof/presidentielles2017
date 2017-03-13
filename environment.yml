@@ -8,3 +8,4 @@ dependencies:
   - pandas
   - jupyter
   - notebook
+  - python=3.5
