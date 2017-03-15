@@ -16,8 +16,9 @@ def load_data(projects_path='../projets'):
     jlm['proposition'].dropna().str.replace("Nous proposons de réaliser les mesures suivantes\xa0:", '').replace('\xa0', '  ')
     em = pd.read_csv(op.join(projects_path, 'emmanuel_macron.csv'))
     ff = pd.read_csv(op.join(projects_path, 'francois_fillon.csv'))
-    candidates = [jlm, bh, em, ff, mlp]
-    candidate_labels = ['JLM', 'BH', 'EM', 'FF', 'MLP']
+    nda = pd.read_csv(op.join(projects_path, 'nicolas_dupont-aignan.csv'))
+    candidates = [jlm, bh, em, ff, nda, mlp]
+    candidate_labels = ['JLM', 'BH', 'EM', 'FF', 'NDA', 'MLP']
     return candidates, candidate_labels
 
 
