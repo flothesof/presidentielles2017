@@ -9,3 +9,5 @@ dependencies:
   - jupyter
   - notebook
   - python=3.5
+  - matplotlib
+
