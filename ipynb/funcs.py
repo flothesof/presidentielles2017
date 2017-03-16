@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from ipywidgets import interact_manual, interact
 from ipywidgets import Button, HBox, IntText, HTML, VBox
 from IPython.display import display, clear_output
 import os.path as op
@@ -41,7 +40,7 @@ class GUI:
         self.buttons = buttons
 
         # scorebox and new_question button and confusion matrix
-        self.scorebox = IntText(description='score', value=0)
+        self.scorebox = IntText(description='score', value=0, disabled=True)
         new_question = Button(description='nouvelle question !')
         new_question.on_click(self.create_new_question)
         confusion_matrix_button = Button(description='afficher matrice de confusion')
