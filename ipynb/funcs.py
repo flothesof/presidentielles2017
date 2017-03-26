@@ -28,9 +28,9 @@ class GUI:
         self.candidate_labels = candidate_labels
         self.propositions = propositions
         self.choice = None
-        self.clicked = dict(zip(self.candidate_labels, [False] * len(self.candidate_labels)))
-        self.confusion_matrix = np.zeros((len(candidate_labels), len(candidate_labels)))
-        
+        self.clicked = False
+        self.confusion_matrix = np.zeros((len(candidate_labels), len(candidate_labels)), dtype=np.int)
+
         # candidate buttons
         buttons = [Button(description=label) for label in self.candidate_labels]
         for b in buttons:
@@ -41,12 +41,13 @@ class GUI:
 
         # scorebox and new_question button and confusion matrix
         self.scorebox = IntText(description='score', value=0, disabled=True)
+        self.number = IntText(description='questions', value=0, disabled=True)
         new_question = Button(description='nouvelle question !')
         new_question.on_click(self.create_new_question)
         confusion_matrix_button = Button(description='afficher matrice de confusion')
         confusion_matrix_button.on_click(self.show_confusion_matrix)
         hbox2 = HBox()
-        hbox2.children = [self.scorebox, new_question, confusion_matrix_button]
+        hbox2.children = [self.scorebox, self.number, new_question, confusion_matrix_button]
 
         # proposition box
         self.html = HTML()
@@ -58,7 +59,7 @@ class GUI:
 
         # generate first question
         self.create_new_question()
-        
+
     def create_new_question(self, b=None):
         clear_output()
         choice = np.random.randint(len(self.candidate_labels))
@@ -70,34 +71,45 @@ class GUI:
                                              current_propositions['source'][m])
         for b in self.buttons:
             b.style.button_color = None
-            self.clicked = dict(zip(self.candidate_labels, [False] * len(self.candidate_labels)))
-        
+            self.clicked = False
+
     def on_button_clicked(self, b):
         clear_output()
-        if not self.clicked[b.description]:
+        if not self.clicked:
             if b.description == self.candidate_labels[self.choice]:
                 self.scorebox.value += 1
                 b.style.button_color = 'lightgreen'
                 self.update_confusion_matrix(b.description, self.candidate_labels[self.choice])
             else:
-                self.scorebox.value -= 1
+                self.scorebox.value -= 0
                 b.style.button_color = 'red'
                 self.update_confusion_matrix(b.description, self.candidate_labels[self.choice])
-        self.clicked[b.description] = True
-        
+                for b in self.buttons:
+                    if b.description == self.candidate_labels[self.choice]:
+                        b.style.button_color = 'lightgreen'
+                        break
+            self.number.value += 1
+        self.clicked = True
+
     def update_confusion_matrix(self, clicked_label, true_label):
         "Updates confusion matrix with answer."
         clicked = self.candidate_labels.index(clicked_label)
         true = self.candidate_labels.index(true_label)
         self.confusion_matrix[true, clicked] += 1
-        
+
     def show_confusion_matrix(self, b):
         classes = self.candidate_labels
-        plt.imshow(self.confusion_matrix)
-        plt.colorbar(label='nombre de réponses')
+        cm = self.confusion_matrix
+        norm = cm.sum(axis=1)[:, np.newaxis].astype(np.float)
+        norm[norm == 0] = np.nan
+        plt.imshow(cm / norm * 100, vmin=0, vmax=100, cmap='rainbow')
+        plt.colorbar(label='pourcentage de réponse')
         tick_marks = np.arange(len(classes))
         plt.xticks(tick_marks, classes, rotation=45)
         plt.yticks(tick_marks, classes)
         plt.ylabel('Vraie réponse')
         plt.xlabel('Ce que vous avez répondu')
-        print(self.confusion_matrix)
+        for y in range(cm.shape[0]):
+            for x in range(cm.shape[1]):
+                if ~np.isnan(cm[y, x]):
+                    plt.text(x, y, cm[y, x], horizontalalignment='center', verticalalignment='center')
